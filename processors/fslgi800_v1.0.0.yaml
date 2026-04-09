@@ -1,0 +1,53 @@
+# https://github.com/baxpr/freesurfer800-iis
+---
+procyamlversion: 3.0.0-dev.0
+
+containers:
+  - name: freesurfer
+    path: freesurfer800-iis_v2.0.1.sif
+    source: docker://baxterprogers/freesurfer800-iis:v2.0.1
+requirements:
+  walltime: 2-0
+  memory: 32G
+jobtemplate: job_template_v3.txt
+
+inputs:
+  xnat:
+    
+    filters:
+      type: match
+      inputs: scan_t1,freesurfer/scan_t1
+          
+    scans:
+      - name: scan_t1
+        types: cs_T1W_3D_TFE_32 channel,T1,T1_PGPP
+        skip_unusable: True
+        needs_qc: False
+
+    assessors:
+      - name: freesurfer
+        types: freesurfer800_v2
+        resources: 
+          - {resource: SUBJECT, fdest: freesurfer, type: DIR}
+
+outputs:
+  - {path: '.', type: DIR, resource: all_outputs}
+
+
+command:
+  type: singularity_exec
+  container: freesurfer
+  opts: >-
+    --home $JOBDIR
+    --bind $INDIR:/INPUTS
+    --bind $OUTDIR:/OUTPUTS
+    --bind $JOBDIR:/tmp
+  extraopts: >-
+    --bind /data/mcr/centos7/FS6/license.txt:/usr/local/freesurfer/8.0.0-1/.license
+  args: >-
+    bash -c '
+    cp -R /INPUTS/freesurfer/SUBJECT /OUTPUTS &&
+    export SUBJECTS_DIR=/OUTPUTS &&
+    recon-all -s SUBJECT -localGI
+    '
+
