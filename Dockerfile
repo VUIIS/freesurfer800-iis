@@ -80,6 +80,7 @@ ENV MCR_CACHE_ROOT=/tmp
 # And add our own code for custom post-processing and QC
 COPY README.md /opt/fs-extensions/
 COPY src /opt/fs-extensions/src
+COPY matlab /opt/fs-extensions/matlab
 ENV PATH /opt/fs-extensions/src:/opt/fs-extensions/matlab/bin:${PATH}
 
 # Matlab executable must be run at build to extract the CTF archive
