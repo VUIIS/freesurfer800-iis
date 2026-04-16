@@ -1,6 +1,13 @@
 function matlab_entrypoint(varargin)
 
-fcn = varargin{2};
+fcn = varargin{1};
 
-feval(fcn,varargin{3:end});
+if nargin>1
+    feval(fcn,varargin{2:end});
+else
+    feval(fcn);
+end
 
+if isdeployed
+    exit
+end
