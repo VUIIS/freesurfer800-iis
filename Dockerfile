@@ -8,7 +8,6 @@ RUN yum -y update && \
     yum -y install ImageMagick && \
     yum -y install xorg-x11-server-Xvfb xorg-x11-xauth && \
     yum -y install procps-ng mesa-libGLU fontconfig libtiff mesa-dri-drivers && \
-    yum -y install java-1.8.0-openjdk && \
     yum clean all
 
 # FS RPM package
@@ -64,6 +63,9 @@ RUN cd /opt && \
 RUN pip3 install pandas nibabel numpy scipy
 
 # Matlab Compiled Runtime
+RUN yum -y update && \
+    yum -y install java-1.8.0-openjdk && \
+    yum clean all
 RUN wget -nv https://ssd.mathworks.com/supportfiles/downloads/R2023a/Release/6/deployment_files/installer/complete/glnxa64/MATLAB_Runtime_R2023a_Update_6_glnxa64.zip \
     -O /opt/mcr_installer.zip && \
     unzip /opt/mcr_installer.zip -d /opt/mcr_installer && \
