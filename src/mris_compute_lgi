@@ -1,7 +1,9 @@
 #! /bin/tcsh -f
 
-# FIXME Update to use compiled matlab binary run_matlab_entrypoint.sh
-# FIXME Make sure this is ahead of the default mris_compute_lgi in the path for recon-all
+# Edited to use compiled matlab binary run_matlab_entrypoint.sh instead of calling 
+# Matlab directly.
+#
+# This must be ahead of the default mris_compute_lgi in the path for recon-all.
 
 #
 # mris_compute_lgi
@@ -56,9 +58,10 @@ check_params_return:
 #---------
 
 # check for matlab
-set MATLAB = `getmatlab`;
+echo "Running mris_compute_lgi modified for compiled matlab"
+run_matlab_entrypoint.sh quit
 if($status) then
-  echo "ERROR: Matlab is required to run mris_compute_lgi!"
+  echo "ERROR: run_matlab_entrypoint.sh is required to run this version of mris_compute_lgi!"
   exit 1;
 endif
 
@@ -93,24 +96,20 @@ endif
 # make_outer_surface.m
 #
 # create the outer surface from the filled volume
-set MLF = `fs_temp_file --suffix .m`
 set arg1 = ${tmpdir}/${input}.filled.mgz
 set arg2 = ${closespheresize}
 set arg3 =  ${tmpdir}/${input}-outer
 rm -f ${arg3}
-echo "make_outer_surface('${arg1}',${arg2},'${arg3}'); exit" > $MLF
+set cmd=(run_matlab_entrypoint.sh make_outer_surface ${arg1} ${arg2} ${arg3})
 echo "================="
-echo "`cat $MLF`"
+echo "$cmd"
 echo "================="
-if ($RunIt) then
-  cat $MLF | ${MATLAB} -display iconic -nojvm -nosplash
+if ($RunIt) $cmd
+if($status) then
+  echo "ERROR: $cmd failed!"
+  exit 1;
 endif
-echo ""
-rm -f ${MLF}
-if ( $RunIt && ! -e ${arg3} ) then
-  echo "ERROR: make_outer_surface did not create output file '${arg3}'!"
-  exit 1
-endif
+
 
 #
 # mris_extract_main_component (optional, default)
@@ -189,23 +188,19 @@ endif
 # find_corresponding_center_FSformat.m
 #
 # create ROI center files
-set MLF = `fs_temp_file --suffix .m`
 set arg1 = ${input}
 set arg2 = ${input}-outer-smoothed
 set arg3 = ${stepsize}
 set arg4 = ${tmpdir}
-set arg5 = ${MLF}
-echo "find_corresponding_center_FSformat('${arg1}','${arg2}',${arg3},'${arg4}','${arg5}'); exit" > $MLF
+set arg5 = `fs_temp_file --suffix .flag`
+set cmd=(run_matlab_entrypoint.sh find_corresponding_center_FSformat ${arg1} ${arg2} ${arg3} ${arg4} ${arg5})
 echo "================="
-echo "`cat $MLF`"
+echo "$cmd"
 echo "================="
-if ($RunIt) then
-  cat ${MLF} | ${MATLAB} -display iconic -nojvm -nosplash
-endif
-echo ""
-if ( $RunIt &&  -e ${MLF} ) then
-  echo "ERROR: find_corresponding_center_FSformat did not complete successfully!"
-  exit 1
+if ($RunIt) $cmd
+if($status) then
+  echo "ERROR: $cmd failed!"
+  exit 1;
 endif
 
 
@@ -213,25 +208,22 @@ endif
 # make_roi_paths.m
 #
 # create ROI path files
-set MLF = `fs_temp_file --suffix .m`
 set arg1 = ${input}
 set arg2 = ${input}-outer-smoothed
 set arg3 = ${radius}
 set arg4 = ${stepsize}
 set arg5 = ${tmpdir}
-set arg6 = ${MLF}
-echo "make_roi_paths('${arg1}','${arg2}',${arg3},${arg4},'${arg5}','${arg6}'); exit" > $MLF
+set arg6 = `fs_temp_file --suffix .flag`
+set cmd=(run_matlab_entrypoint.sh make_roi_paths ${arg1} ${arg2} ${arg3} ${arg4} ${arg5} ${arg6})
 echo "================="
-echo "`cat $MLF`"
+echo "$cmd"
 echo "================="
-if ($RunIt) then
-  cat $MLF | ${MATLAB} -display iconic -nojvm -nosplash
+if ($RunIt) $cmd
+if($status) then
+  echo "ERROR: $cmd failed!"
+  exit 1;
 endif
-echo ""
-if ( $RunIt && -e ${MLF} ) then
-  echo "ERROR:  make_roi_paths did not complete successfully!"
-  exit 1
-endif
+
 
 
 #
@@ -269,7 +261,6 @@ endif
 #
 # finally, compute lGI measurements
 compute_lgi:
-set MLF = `fs_temp_file --suffix .m`
 set arg1 = ${input}
 set arg2 = ${input}-outer-smoothed
 set arg3 = ${tmpdir}/${input}-outer-smoothed-normals.asc
@@ -277,16 +268,15 @@ set arg4 = ${stepsize}
 set arg5 = ${radius}
 set arg6 = ${tmpdir}
 rm -f ${tmpdir}/${input}_lgi.asc
-echo "compute_lgi('${arg1}','${arg2}','${arg3}',${arg4},${arg5},'${arg6}'); exit" \
-    > $MLF
+set cmd=(run_matlab_entrypoint.sh compute_lgi ${arg1} ${arg2} ${arg3} ${arg4} ${arg5} ${arg6})
 echo "================="
-echo "`cat $MLF`"
+echo "$cmd"
 echo "================="
-if ($RunIt) then
-  cat $MLF | ${MATLAB} -display iconic -nojvm -nosplash
+if ($RunIt) $cmd
+if($status) then
+  echo "ERROR: $cmd failed!"
+  exit 1;
 endif
-echo ""
-rm -f ${MLF}
 if ( $RunIt && ! -e ${tmpdir}/${input}_lgi.asc ) then
   echo "ERROR: compute_lgi did not create output file '${tmpdir}/${input}_lgi.asc'!"
   exit 1
