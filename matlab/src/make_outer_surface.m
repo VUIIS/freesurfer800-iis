@@ -19,6 +19,9 @@ function make_outer_surface (filled_volume, se_diameter, output_surface)
 %
 % Example: make_outer_surface('lh.pial.mgz',15,'lh.outer-pial')
 
+if isstr(se_diameter)
+    se_diameter = str2double(se_diameter);
+end
 
     fprintf('reading filled volume...\n');
     vol=MRIread(filled_volume);

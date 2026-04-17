@@ -23,6 +23,13 @@ function compute_lgi (pial, outersmoothed, fnormal, nsteps, radius, outdir)
 % 
 % Example: compute_lgi ('lh.pial', 'lh.outer-smoothed', 'lh.outer-smoothed_n.asc', 100 , 25)
 
+if isstr(nsteps)
+    nsteps = str2double(nsteps);
+end
+
+if isstr(radius)
+    radius = str2double(radius);
+end
 
 t0 = cputime;
     

@@ -21,6 +21,10 @@ function find_corresponding_center_FSformat (pial, outersmoothed, stepsize, outd
 %  corresponding to the vertex number * of the outer mesh,
 %  and a file named 'center.vertices' which contains selected vertices
 
+if isstr(stepsize)
+    stepsize = str2double(stepsize);
+end
+
 t0 = cputime;    
 
 [mesh_pial.vertices, mesh_pial.faces] = freesurfer_read_surf(pial);

@@ -24,6 +24,14 @@ function make_roi_paths(pial, outersmoothed, radius, stepsize, outdir, flagf)
 %
 % Example: make_roi_paths('lh.pial','lh.outer-pial-smoothed',25,100,/tmp)
 
+if isstr(radius)
+    radius = str2double(radius);
+end
+
+if isstr(stepsize)
+    stepsize = str2double(stepsize);
+end
+
 t0 = cputime;
 
 disp('loading datas ...')
