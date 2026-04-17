@@ -4,6 +4,8 @@
 # Matlab directly.
 #
 # This must be ahead of the default mris_compute_lgi in the path for recon-all.
+#
+# MATLAB_RUNTIME must be set in the environment.
 
 #
 # mris_compute_lgi
@@ -59,7 +61,7 @@ check_params_return:
 
 # check for matlab
 echo "Running mris_compute_lgi modified for compiled matlab"
-run_matlab_entrypoint.sh quit
+run_matlab_entrypoint.sh ${MATLAB_RUNTIME} quit
 if($status) then
   echo "ERROR: run_matlab_entrypoint.sh is required to run this version of mris_compute_lgi!"
   exit 1;
@@ -100,7 +102,7 @@ set arg1 = ${tmpdir}/${input}.filled.mgz
 set arg2 = ${closespheresize}
 set arg3 =  ${tmpdir}/${input}-outer
 rm -f ${arg3}
-set cmd=(run_matlab_entrypoint.sh make_outer_surface ${arg1} ${arg2} ${arg3})
+set cmd=(run_matlab_entrypoint.sh ${MATLAB_RUNTIME} make_outer_surface ${arg1} ${arg2} ${arg3})
 echo "================="
 echo "$cmd"
 echo "================="
@@ -193,7 +195,7 @@ set arg2 = ${input}-outer-smoothed
 set arg3 = ${stepsize}
 set arg4 = ${tmpdir}
 set arg5 = `fs_temp_file --suffix .flag`
-set cmd=(run_matlab_entrypoint.sh find_corresponding_center_FSformat ${arg1} ${arg2} ${arg3} ${arg4} ${arg5})
+set cmd=(run_matlab_entrypoint.sh ${MATLAB_RUNTIME} find_corresponding_center_FSformat ${arg1} ${arg2} ${arg3} ${arg4} ${arg5})
 echo "================="
 echo "$cmd"
 echo "================="
@@ -214,7 +216,7 @@ set arg3 = ${radius}
 set arg4 = ${stepsize}
 set arg5 = ${tmpdir}
 set arg6 = `fs_temp_file --suffix .flag`
-set cmd=(run_matlab_entrypoint.sh make_roi_paths ${arg1} ${arg2} ${arg3} ${arg4} ${arg5} ${arg6})
+set cmd=(run_matlab_entrypoint.sh ${MATLAB_RUNTIME} make_roi_paths ${arg1} ${arg2} ${arg3} ${arg4} ${arg5} ${arg6})
 echo "================="
 echo "$cmd"
 echo "================="
@@ -268,7 +270,7 @@ set arg4 = ${stepsize}
 set arg5 = ${radius}
 set arg6 = ${tmpdir}
 rm -f ${tmpdir}/${input}_lgi.asc
-set cmd=(run_matlab_entrypoint.sh compute_lgi ${arg1} ${arg2} ${arg3} ${arg4} ${arg5} ${arg6})
+set cmd=(run_matlab_entrypoint.sh ${MATLAB_RUNTIME} compute_lgi ${arg1} ${arg2} ${arg3} ${arg4} ${arg5} ${arg6})
 echo "================="
 echo "$cmd"
 echo "================="
