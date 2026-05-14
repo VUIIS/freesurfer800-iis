@@ -31,7 +31,7 @@ inputs:
           - {resource: SUBJECT, fdest: freesurfer, ftype: DIR}
 
 outputs:
-  - {path: '.', type: DIR, resource: all_outputs}
+  - {path: SUBJECT, type: DIR, resource: SUBJECT}
 
 
 command:
