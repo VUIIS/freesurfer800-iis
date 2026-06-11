@@ -48,18 +48,59 @@ command:
     --bind /data/mcr/centos7/FS6/license.txt:/usr/local/freesurfer/8.0.0-1/.license
   args: >-
     bash -c '
+
     export SUBJECTS_DIR=/INPUTS/freesurfer &&
-    ln -s "\$FREESURFER_HOME/subjects/fsaverage" "\$SUBJECTS_DIR/fsaverage" &&
+
+    ln -s "\$FREESURFER_HOME/subjects/fsaverage" "\$SUBJECTS_DIR/fsaverage"
+    &&
+
     mri_surf2surf 
-      --srcsubject freesurfer800_v2
+      --srcsubject SUBJECT
       --trgsubject fsaverage
       --hemi lh
-      --sval "\$SUBJECTS_DIR/surf/lh.pial_lgi"
-      --tval "/OUTPUTS/lh.lgi.fsaverage.mgh" &&
+      --sval lh.pial_lgi
+      --tval /OUTPUTS/lh.pial_lgi.fsaverage.mgh
+    &&
+
     mri_surf2surf 
-      --srcsubject freesurfer800_v2
+      --srcsubject SUBJECT
       --trgsubject fsaverage
       --hemi rh
-      --sval "\$SUBJECTS_DIR/surf/rh.pial_lgi"
-      --tval "/OUTPUTS/rh.lgi.fsaverage.mgh" &&
+      --sval rh.pial_lgi
+      --tval /OUTPUTS/rh.pial_lgi.fsaverage.mgh
+    &&
+    
+    mri_surf2surf
+      --srcsubject SUBJECT
+      --trgsubject fsaverage
+      --hemi lh
+      --sval lh.area
+      --tval /OUTPUTS/lh.area.jac.fsaverage.mgh
+      --jac
+    &&
+    
+    mri_surf2surf
+      --srcsubject SUBJECT
+      --trgsubject fsaverage
+      --hemi rh
+      --sval rh.area
+      --tval /OUTPUTS/rh.area.jac.fsaverage.mgh
+      --jac
+    &&
+
+    mri_surf2surf
+      --srcsubject SUBJECT
+      --trgsubject fsaverage
+      --hemi       lh
+      --sval       lh.thickness
+      --tval       /OUTPUTS/lh.thickness.fsaverage.mgh
+    &&
+
+    mri_surf2surf
+      --srcsubject SUBJECT
+      --trgsubject fsaverage
+      --hemi       rh
+      --sval       rh.thickness
+      --tval       /OUTPUTS/rh.thickness.fsaverage.mgh
+
     '
