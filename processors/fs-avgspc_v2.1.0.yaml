@@ -50,57 +50,57 @@ command:
     bash -c '
 
     export SUBJECTS_DIR=/INPUTS/freesurfer &&
-
+    export SUBJECT=SUBJECT &&
     ln -s "\$FREESURFER_HOME/subjects/fsaverage" "\$SUBJECTS_DIR/fsaverage"
     &&
 
     mri_surf2surf 
-      --srcsubject SUBJECT
+      --srcsubject \$SUBJECT
       --trgsubject fsaverage
       --hemi lh
-      --sval lh.pial_lgi
+      --sval \$SUBJECTS_DIR/\$SUBJECT/surf/lh.pial_lgi
       --tval /OUTPUTS/lh.pial_lgi.fsaverage.mgh
     &&
 
     mri_surf2surf 
-      --srcsubject SUBJECT
+      --srcsubject \$SUBJECT
       --trgsubject fsaverage
       --hemi rh
-      --sval rh.pial_lgi
+      --sval \$SUBJECTS_DIR/\$SUBJECT/surf/rh.pial_lgi
       --tval /OUTPUTS/rh.pial_lgi.fsaverage.mgh
     &&
     
     mri_surf2surf
-      --srcsubject SUBJECT
+      --srcsubject \$SUBJECT
       --trgsubject fsaverage
       --hemi lh
-      --sval lh.area
+      --sval \$SUBJECTS_DIR/\$SUBJECT/surf/lh.area
       --tval /OUTPUTS/lh.area.jac.fsaverage.mgh
       --jac
     &&
     
     mri_surf2surf
-      --srcsubject SUBJECT
+      --srcsubject \$SUBJECT
       --trgsubject fsaverage
       --hemi rh
-      --sval rh.area
+      --sval \$SUBJECTS_DIR/\$SUBJECT/surf/rh.area
       --tval /OUTPUTS/rh.area.jac.fsaverage.mgh
       --jac
     &&
 
     mri_surf2surf
-      --srcsubject SUBJECT
+      --srcsubject \$SUBJECT
       --trgsubject fsaverage
       --hemi       lh
-      --sval       lh.thickness
+      --sval       \$SUBJECTS_DIR/\$SUBJECT/surf/lh.thickness
       --tval       /OUTPUTS/lh.thickness.fsaverage.mgh
     &&
 
     mri_surf2surf
-      --srcsubject SUBJECT
+      --srcsubject \$SUBJECT
       --trgsubject fsaverage
       --hemi       rh
-      --sval       rh.thickness
+      --sval       \$SUBJECTS_DIR/\$SUBJECT/surf/rh.thickness
       --tval       /OUTPUTS/rh.thickness.fsaverage.mgh
 
     '
